@@ -6,7 +6,7 @@
 
 #define LOG_DEFAULT_LEVEL LOG_WARNING
 
-#ifndef IPT_LOG_UID /* Old kernel */
+#ifndef IPT_LOG_UID     /* Old kernel */
 #define IPT_LOG_UID	0x08	/* Log UID owning local socket */
 #undef  IPT_LOG_MASK
 #define IPT_LOG_MASK	0x0f

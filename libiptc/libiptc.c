@@ -984,7 +984,6 @@ static int cache_add_entry(STRUCT_ENTRY *e,
 
 		__iptcc_p_add_chain(h, c, offset, num);
 
-		/* FIXME: this is ugly. */
 		goto new_rule;
 	} else {
 		/* has to be normal rule */
@@ -2544,9 +2543,6 @@ TC_COMMIT(struct xtc_handle *handle)
 	}
 	memset(repl, 0, sizeof(*repl) + new_size);
 
-#if 0
-	TC_DUMP_ENTRIES(*handle);
-#endif
 
 	counterlen = sizeof(STRUCT_COUNTERS_INFO)
 			+ sizeof(STRUCT_COUNTERS) * new_number;

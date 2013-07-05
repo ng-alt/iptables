@@ -82,11 +82,6 @@ static void limit_init(struct xt_entry_match *m)
 
 }
 
-/* FIXME: handle overflow:
-	if (r->avg*r->burst/r->burst != r->avg)
-		xtables_error(PARAMETER_PROBLEM,
-			   "Sorry: burst too large for that avg rate.\n");
-*/
 
 static void limit_parse(struct xt_option_call *cb)
 {

@@ -1107,13 +1107,6 @@ void print_rule6(const struct ip6t_entry *e,
 
 	print_proto(e->ipv6.proto, e->ipv6.invflags & IP6T_INV_PROTO);
 
-#if 0
-	/* not definied in ipv6
-	 * FIXME: linux/netfilter_ipv6/ip6_tables: IP6T_INV_FRAG why definied? */
-	if (e->ipv6.flags & IPT_F_FRAG)
-		printf("%s -f",
-		       e->ipv6.invflags & IP6T_INV_FRAG ? " !" : "");
-#endif
 
 	if (e->ipv6.flags & IP6T_F_TOS)
 		printf("%s -? %d",

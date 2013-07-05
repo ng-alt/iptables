@@ -27,12 +27,6 @@ static void ECN_help(void)
 "  --ecn-tcp-remove		Remove all ECN bits from TCP header\n");
 }
 
-#if 0
-"ECN target v%s EXPERIMENTAL options (use with extreme care!)\n"
-"  --ecn-ip-ect			Set the IPv4 ECT codepoint (0 to 3)\n"
-"  --ecn-tcp-cwr		Set the IPv4 CWR bit (0 or 1)\n"
-"  --ecn-tcp-ece		Set the IPv4 ECE bit (0 or 1)\n",
-#endif
 
 static const struct xt_option_entry ECN_opts[] = {
 	{.name = "ecn-tcp-remove", .id = O_ECN_TCP_REMOVE, .type = XTTYPE_NONE,

@@ -68,7 +68,8 @@ targets_install :=
 
 .PHONY: all install clean distclean FORCE
 
-all: ${targets} check
+#all: ${targets} check
+all: ${targets}
 
 check: ${targets}
 	@echo "  CHECK    unknown symbols in .so files"; \

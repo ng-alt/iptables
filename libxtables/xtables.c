@@ -51,11 +51,11 @@
 #ifndef NO_SHARED_LIBS
 #include <dlfcn.h>
 #endif
-#ifndef IPT_SO_GET_REVISION_MATCH /* Old kernel source. */
+#ifndef IPT_SO_GET_REVISION_MATCH     /* Old kernel source. */
 #	define IPT_SO_GET_REVISION_MATCH	(IPT_BASE_CTL + 2)
 #	define IPT_SO_GET_REVISION_TARGET	(IPT_BASE_CTL + 3)
 #endif
-#ifndef IP6T_SO_GET_REVISION_MATCH /* Old kernel source. */
+#ifndef IP6T_SO_GET_REVISION_MATCH     /* Old kernel source. */
 #	define IP6T_SO_GET_REVISION_MATCH	68
 #	define IP6T_SO_GET_REVISION_TARGET	69
 #endif
@@ -212,7 +212,7 @@ void xtables_init(void)
 		        "use XTABLES_LIBDIR.\n");
 		return;
 	}
-	xtables_libdir = XTABLES_LIBDIR;
+	xtables_libdir = "/usr/lib/xtables";
 }
 
 void xtables_set_nfproto(uint8_t nfproto)

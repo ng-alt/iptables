@@ -26,10 +26,6 @@ static const struct reject_names reject_table[] = {
 		IP6T_ICMP6_NO_ROUTE, "ICMPv6 no route"},
 	{"icmp6-adm-prohibited", "adm-prohibited",
 		IP6T_ICMP6_ADM_PROHIBITED, "ICMPv6 administratively prohibited"},
-#if 0
-	{"icmp6-not-neighbor", "not-neighbor"},
-		IP6T_ICMP6_NOT_NEIGHBOR, "ICMPv6 not a neighbor"},
-#endif
 	{"icmp6-addr-unreachable", "addr-unreach",
 		IP6T_ICMP6_ADDR_UNREACH, "ICMPv6 address unreachable"},
 	{"icmp6-port-unreachable", "port-unreach",

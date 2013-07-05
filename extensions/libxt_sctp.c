@@ -20,12 +20,7 @@
 
 #include <linux/netfilter/xt_sctp.h>
 
-#if 0
-#define DEBUGP(format, first...) printf(format, ##first)
-#define static
-#else
 #define DEBUGP(format, fist...) 
-#endif
 
 static void
 print_chunk(uint32_t chunknum, int numeric);
@@ -442,8 +437,6 @@ sctp_print(const void *ip, const struct xt_entry_match *match, int numeric)
 	}
 
 	if (einfo->flags & XT_SCTP_CHUNK_TYPES) {
-		/* FIXME: print_chunks() is used in save() where the printing of '!'
-		s taken care of, so we need to do that here as well */
 		if (einfo->invflags & XT_SCTP_CHUNK_TYPES) {
 			printf(" !");
 		}

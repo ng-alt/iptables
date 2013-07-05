@@ -421,18 +421,5 @@ do_check(struct xtc_handle *h, unsigned int line)
 	i = 0; n = 0;
 	was_return = 0;
 
-#if 0
-	/* Check all the entries. */
-	ENTRY_ITERATE(h->entries.entrytable, h->entries.size,
-		      check_entry, &i, &n, user_offset, &was_return, h);
-
-	assert(i == h->new_number);
-	assert(n == h->entries.size);
-
-	/* Final entry must be error node */
-	assert(strcmp(GET_TARGET(index2entry(h, h->new_number-1))
-		      ->u.user.name,
-		      ERROR_TARGET) == 0);
-#endif
 }
 #endif /*IPTC_DEBUG*/

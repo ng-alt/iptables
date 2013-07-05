@@ -188,14 +188,6 @@ static const int inverse_for_options[NUMBER_OF_OPT] =
 
 /* Primitive headers... */
 /* defined in netinet/in.h */
-#if 0
-#ifndef IPPROTO_ESP
-#define IPPROTO_ESP 50
-#endif
-#ifndef IPPROTO_AH
-#define IPPROTO_AH 51
-#endif
-#endif
 
 enum {
 	IPT_DOTTED_ADDR = 0,

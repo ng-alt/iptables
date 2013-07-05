@@ -16,12 +16,7 @@
 #include <linux/netfilter/x_tables.h>
 #include <linux/netfilter/xt_dccp.h>
 
-#if 0
-#define DEBUGP(format, first...) printf(format, ##first)
-#define static
-#else
 #define DEBUGP(format, fist...) 
-#endif
 
 enum {
 	O_SOURCE_PORT = 0,

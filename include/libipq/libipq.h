@@ -40,7 +40,6 @@ typedef unsigned long ipq_id_t;
 #define LDEBUG(x...)
 #endif	/* DEBUG_LIBIPQ */
 
-/* FIXME: glibc sucks */
 #ifndef MSG_TRUNC
 #define MSG_TRUNC 0x20
 #endif
@@ -80,4 +79,3 @@ char *ipq_errstr(void);
 void ipq_perror(const char *s);
 
 #endif	/* _LIBIPQ_H */
-
