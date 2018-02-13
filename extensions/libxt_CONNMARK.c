@@ -34,6 +34,7 @@ struct xt_connmark_target_info {
 enum {
 	O_SET_MARK = 0,
 	O_SAVE_MARK,
+	O_SET_RETURN,
 	O_RESTORE_MARK,
 	O_AND_MARK,
 	O_OR_MARK,
@@ -44,6 +45,7 @@ enum {
 	O_MASK,
 	F_SET_MARK     = 1 << O_SET_MARK,
 	F_SAVE_MARK    = 1 << O_SAVE_MARK,
+	F_SET_RETURN   = 1 << O_SET_RETURN,
 	F_RESTORE_MARK = 1 << O_RESTORE_MARK,
 	F_AND_MARK     = 1 << O_AND_MARK,
 	F_OR_MARK      = 1 << O_OR_MARK,
@@ -52,7 +54,7 @@ enum {
 	F_CTMASK       = 1 << O_CTMASK,
 	F_NFMASK       = 1 << O_NFMASK,
 	F_MASK         = 1 << O_MASK,
-	F_OP_ANY       = F_SET_MARK | F_SAVE_MARK | F_RESTORE_MARK |
+	F_OP_ANY       = F_SET_MARK | F_SAVE_MARK | F_SET_RETURN | F_RESTORE_MARK |
 	                 F_AND_MARK | F_OR_MARK | F_XOR_MARK | F_SET_XMARK,
 };
 
@@ -61,6 +63,7 @@ static void CONNMARK_help(void)
 	printf(
 "CONNMARK target options:\n"
 "  --set-mark value[/mask]       Set conntrack mark value\n"
+"  --set-return [--mask mask]    Set conntrack mark & nfmark, RETURN\n"
 "  --save-mark [--mask mask]     Save the packet nfmark in the connection\n"
 "  --restore-mark [--mask mask]  Restore saved nfmark value\n");
 }
@@ -70,6 +73,8 @@ static const struct xt_option_entry CONNMARK_opts[] = {
 	{.name = "set-mark", .id = O_SET_MARK, .type = XTTYPE_MARKMASK32,
 	 .excl = F_OP_ANY},
 	{.name = "save-mark", .id = O_SAVE_MARK, .type = XTTYPE_NONE,
+	 .excl = F_OP_ANY},
+	{.name = "set-return", .id = O_SET_RETURN, .type = XTTYPE_MARKMASK32,
 	 .excl = F_OP_ANY},
 	{.name = "restore-mark", .id = O_RESTORE_MARK, .type = XTTYPE_NONE,
 	 .excl = F_OP_ANY},
@@ -83,6 +88,8 @@ static const struct xt_option_entry connmark_tg_opts[] = {
 	{.name = "set-xmark", .id = O_SET_XMARK, .type = XTTYPE_MARKMASK32,
 	 .excl = F_OP_ANY},
 	{.name = "set-mark", .id = O_SET_MARK, .type = XTTYPE_MARKMASK32,
+	 .excl = F_OP_ANY},
+	{.name = "set-return", .id = O_SET_RETURN, .type = XTTYPE_MARKMASK32,
 	 .excl = F_OP_ANY},
 	{.name = "and-mark", .id = O_AND_MARK, .type = XTTYPE_UINT32,
 	 .excl = F_OP_ANY},
@@ -114,6 +121,7 @@ static void connmark_tg_help(void)
 "  --restore-mark [--ctmask mask] [--nfmask mask]\n"
 "                                Copy nfmark to ctmark using masks\n"
 "  --set-mark value[/mask]       Set conntrack mark value\n"
+"  --set-return value[/mask]     Set conntrack mark & nfmark, RETURN\n"
 "  --save-mark [--mask mask]     Save the packet nfmark in the connection\n"
 "  --restore-mark [--mask mask]  Restore saved nfmark value\n"
 "  --and-mark value              Binary AND the ctmark with bits\n"
@@ -145,6 +153,11 @@ static void CONNMARK_parse(struct xt_option_call *cb)
 		markinfo->mark = cb->val.mark;
 		markinfo->mask = cb->val.mask;
 		break;
+	case O_SET_RETURN:
+		markinfo->mode = XT_CONNMARK_SET_RETURN;
+		markinfo->mark = cb->val.mark;
+		markinfo->mask = cb->val.mask;
+		break;
 	case O_SAVE_MARK:
 		markinfo->mode = XT_CONNMARK_SAVE;
 		break;
@@ -172,6 +185,11 @@ static void connmark_tg_parse(struct xt_option_call *cb)
 		info->mode   = XT_CONNMARK_SET;
 		info->ctmark = cb->val.mark;
 		info->ctmask = cb->val.mark | cb->val.mask;
+		break;
+	case O_SET_RETURN:
+		info->mode   = XT_CONNMARK_SET_RETURN;
+		info->ctmark = cb->val.mark;
+		info->ctmask = cb->val.mask;
 		break;
 	case O_AND_MARK:
 		info->mode   = XT_CONNMARK_SET;
@@ -231,6 +249,11 @@ static void CONNMARK_print(const void *ip,
 	    print_mark(markinfo->mark);
 	    print_mask("/", markinfo->mask);
 	    break;
+	case XT_CONNMARK_SET_RETURN:
+	    printf(" CONNMARK set-return ");
+	    print_mark(markinfo->mark);
+	    print_mask("/", markinfo->mask);
+	    break;
 	case XT_CONNMARK_SAVE:
 	    printf(" CONNMARK save ");
 	    print_mask("mask ", markinfo->mask);
@@ -264,6 +287,13 @@ connmark_tg_print(const void *ip, const struct xt_entry_target *target,
 			printf(" CONNMARK set 0x%x", info->ctmark);
 		else
 			printf(" CONNMARK xset 0x%x/0x%x",
+			       info->ctmark, info->ctmask);
+		break;
+	case XT_CONNMARK_SET_RETURN:
+		if (info->ctmask == 0xFFFFFFFFU)
+			printf(" CONNMARK set-return 0x%x", info->ctmark);
+		else
+			printf(" CONNMARK set-return 0x%x/0x%x",
 			       info->ctmark, info->ctmask);
 		break;
 	case XT_CONNMARK_SAVE:
@@ -302,6 +332,11 @@ static void CONNMARK_save(const void *ip, const struct xt_entry_target *target)
 	    print_mark(markinfo->mark);
 	    print_mask("/", markinfo->mask);
 	    break;
+	case XT_CONNMARK_SET_RETURN:
+	    printf(" --set-return ");
+	    print_mark(markinfo->mark);
+	    print_mask("/", markinfo->mask);
+	    break;
 	case XT_CONNMARK_SAVE:
 	    printf(" --save-mark ");
 	    print_mask("--mask ", markinfo->mask);
@@ -332,6 +367,9 @@ connmark_tg_save(const void *ip, const struct xt_entry_target *target)
 	switch (info->mode) {
 	case XT_CONNMARK_SET:
 		printf(" --set-xmark 0x%x/0x%x", info->ctmark, info->ctmask);
+		break;
+	case XT_CONNMARK_SET_RETURN:
+		printf(" --set-return 0x%x/0x%x", info->ctmark, info->ctmask);
 		break;
 	case XT_CONNMARK_SAVE:
 		printf(" --save-mark --nfmask 0x%x --ctmask 0x%x",

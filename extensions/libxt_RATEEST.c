@@ -44,7 +44,7 @@ static const struct xt_option_entry RATEEST_opts[] = {
 #define TIME_UNITS_PER_SEC	1000000
 
 static int
-RATEEST_get_time(unsigned int *time, const char *str)
+RATEEST_get_time(unsigned int *rateest_time, const char *str)
 {
 	double t;
 	char *p;
@@ -67,21 +67,21 @@ RATEEST_get_time(unsigned int *time, const char *str)
 			return -1;
 	}
 
-	*time = t;
+	*rateest_time = t;
 	return 0;
 }
 
 static void
-RATEEST_print_time(unsigned int time)
+RATEEST_print_time(unsigned int rateest_time)
 {
-	double tmp = time;
+	double tmp = rateest_time;
 
 	if (tmp >= TIME_UNITS_PER_SEC)
 		printf(" %.1fs", tmp / TIME_UNITS_PER_SEC);
 	else if (tmp >= TIME_UNITS_PER_SEC/1000)
 		printf(" %.1fms", tmp / (TIME_UNITS_PER_SEC / 1000));
 	else
-		printf(" %uus", time);
+		printf(" %uus", rateest_time);
 }
 
 static void RATEEST_parse(struct xt_option_call *cb)

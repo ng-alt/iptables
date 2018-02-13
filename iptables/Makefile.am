@@ -22,7 +22,7 @@ xtables_multi_CFLAGS  += -DENABLE_IPV6
 xtables_multi_LDADD   += ../libiptc/libip6tc.la ../extensions/libext6.a
 endif
 xtables_multi_SOURCES += xshared.c
-xtables_multi_LDADD   += ../libxtables/libxtables.la -lm
+xtables_multi_LDADD   += ../libxtables/libxtables.la -lm -ldl
 
 sbin_PROGRAMS    = xtables-multi
 man_MANS         = iptables.8 iptables-restore.8 iptables-save.8 \
@@ -48,7 +48,7 @@ pkgconfig_DATA = xtables.pc
 
 # Using if..fi avoids an ugly "error (ignored)" message :)
 install-exec-hook:
-	-if test -z "${DESTDIR}"; then /sbin/ldconfig; fi;
+#	-if test -z "${DESTDIR}"; then /sbin/ldconfig; fi;
 	${INSTALL} -dm0755 "${DESTDIR}${bindir}";
 	for i in ${vx_bin_links}; do ${LN_S} -f "${sbindir}/xtables-multi" "${DESTDIR}${bindir}/$$i"; done;
 	for i in ${v4_sbin_links}; do ${LN_S} -f xtables-multi "${DESTDIR}${sbindir}/$$i"; done;

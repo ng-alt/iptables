@@ -561,6 +561,9 @@ static int xtables_getportbyname(const char *name)
 	struct addrinfo *res = NULL, *p;
 	int ret;
 
+	if ((ret = strtol(name, NULL, 0)) > 0)
+		return ret;
+
 	ret = getaddrinfo(NULL, name, NULL, &res);
 	if (ret < 0)
 		return -1;
