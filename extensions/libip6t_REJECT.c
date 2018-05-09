@@ -31,7 +31,9 @@ static const struct reject_names reject_table[] = {
 	{"icmp6-port-unreachable", "port-unreach",
 		IP6T_ICMP6_PORT_UNREACH, "ICMPv6 port unreachable"},
 	{"tcp-reset", "tcp-reset",
-		IP6T_TCP_RESET, "TCP RST packet"}
+		IP6T_TCP_RESET, "TCP RST packet"},
+	{"icmp6-src-addr-failed", "src-addr-failed",
+		IP6T_ICMP6_SRC_ADDR_FAILED, "ICMPv6 source address failed"} //Foxconn added Bernie 2014/12/10 for code 5
 };
 
 static void
